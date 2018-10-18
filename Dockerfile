@@ -29,4 +29,6 @@ COPY package-lock.json /app/package-lock.json
 RUN npm i
 
 EXPOSE 3000
-CMD ["bundle", "exec", "rails", "server", "-b", "0.0.0.0"]
+RUN yum install -y tree
+RUN yum install -y which
+# CMD ["bundle", "exec", "rails", "server", "-b", "0.0.0.0"]

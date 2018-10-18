@@ -1,15 +1,24 @@
 version: '3'
+
+volumes:
+  vendor-dummy:
+    driver: 'local'
+  mysql-webapp-data:
+    driver: 'local'
+
 services:
   web:
     build:
       context: .
     volumes:
       - .:/app
-      - /app/vendor
+      - vendor-dummy:/app/vendor
       - /app/node_modules
     ports:
       - "3000:3000"
+    command: "bundle list"
     environment:
+      - BUNDLE_JOBS=2
       - RACK_ENV=development
       - DATABASE_URL=mysql2://webapp:webapp@mysql/webapp_development
     depends_on:
@@ -25,6 +34,3 @@ services:
       - "MYSQL_ROOT_PASSWORD=password"
       - "MYSQL_USER=webapp"
       - "MYSQL_PASSWORD=webapp"
-
-volumes:
-  mysql-webapp-data:
