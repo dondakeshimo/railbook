@@ -13,17 +13,20 @@ RUN ./configure
 RUN make
 RUN make install
 
+WORKDIR /app
+
 RUN gem update --system
 RUN gem install bundler --force
-RUN gem install rails
+COPY Gemfile /app/Gemfile
+COPY Gemfile.lock /app/Gemfile.lock
+RUN bundle install -path vendor/bundle
 
 RUN curl -sL https://rpm.nodesource.com/setup_6.x | bash -
 RUN yum install -y nodejs
 
-RUN yum install -y sqlite sqlite-devel
-RUN gem install sqlite3
+COPY package.json /app/package.json
+COPY yarn.lock /app/yarn.lock
+RUN npm i
 
-RUN adduser devuser
-ENV HOME /home/devuser
-WORKDIR /home/devuser
-USER devuser
+EXPOSE 3000
+CMD ["bundle", "exec", "rails", "server", "-b", "0.0.0.0"]
