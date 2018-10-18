@@ -1,0 +1,30 @@
+version: '3'
+services:
+  web:
+    build:
+      context: .
+    volumes:
+      - .:/app
+      - /app/vendor
+      - /app/node_modules
+    ports:
+      - "3000:3000"
+    environment:
+      - RACK_ENV=development
+      - DATABASE_URL=mysql2://webapp:webapp@mysql/webapp_development
+    depends_on:
+      - mysql
+
+  mysql:
+    image: mysql:5.7
+    command: "mysqld --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci"
+    volumes:
+      - "mysql-webapp-data:/var/lib/mysql"
+    environment:
+      - "MYSQL_DATABASE=webapp_development"
+      - "MYSQL_ROOT_PASSWORD=password"
+      - "MYSQL_USER=webapp"
+      - "MYSQL_PASSWORD=webapp"
+
+volumes:
+  mysql-webapp-data:
